@@ -31,9 +31,12 @@ Após iniciar o projeto, será aberto um vídeo do YouTube com três botões loc
 
 1. **Videos baixados:**
    - Ao clicar neste botão, uma nova aba será aberta com todos os vídeos disponíveis para download.
+   ![Meu GIF](https://github.com/LucasAdriSilva/Karaoke/videos/openDownload.gif)
+
 
 2. **Fazer download:**
    - Quando estiver em uma tela com o vídeo, clique para iniciar o download. O botão ficará **amarelo** enquanto o download estiver em andamento. Quando o download for concluído, o botão voltará a ficar **azul**.
+   ![Meu GIF](https://github.com/LucasAdriSilva/Karaoke/videos/download.gif)
 
 3. **Voltar:**
    - Este botão funciona com a funcionalidade do botão de "Voltar" do navegador, permitindo retornar à página anterior.
