@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloads</title>
+</head>
+<style>
+    body {
+        background-color: rgb(0, 0, 0);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 10px;
+        font-family: sans-serif;
+    }
+
+    #downloads-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 20px;
+        max-width: 100%;
+    }
+
+    .libVideo {
+        width: 10svw;
+        height: auto;
+        border-radius: 5px;
+        max-width: 200px;
+        border: 4px solid #fff;
+    }
+
+    .div-video {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        width: 10svw;
+        max-width: 200px;
+    }
+
+    .title-video {
+        max-width: 95%;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .filter-input {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+</style>
+
+<body>
+    <h1 style="text-align: center; color: #fff;">Downloads</h1>
+    <input type="text" id="filter-input" class="filter-input" placeholder="Filtrar vídeos..." />
+
+    <ul id="downloads-list"></ul>
+
+    <script>
+        // Função para filtrar os vídeos
+        function filterVideos(filterText, downloads) {
+            return downloads.filter(download =>
+                download.title.toLowerCase().includes(filterText.toLowerCase())
+            );
+        }
+
+        // Usando o método correto para ouvir o evento
+        window.electronAPI.on('downloads-list', (event, downloads) => {
+            const list = document.getElementById('downloads-list');
+            const filterInput = document.getElementById('filter-input');
+
+            // Função que atualiza a lista de vídeos com base no filtro
+            function updateList(filteredDownloads) {
+                list.innerHTML = ''; // Limpa a lista antes de adicionar os itens
+
+                filteredDownloads.forEach(download => {
+                    const videoContainer = document.createElement('div');
+                    const video = document.createElement('video');
+                    const videoTitle = document.createElement('p');
+
+                    // Configurações do vídeo
+                    video.src = download.path;
+                    video.classList.add('libVideo');
+                    videoContainer.classList.add('div-video');
+                    videoTitle.classList.add('title-video');
+
+                    // Exibe o nome do arquivo abaixo do vídeo
+                    videoTitle.textContent = download.title;
+                    videoTitle.title = download.title;
+                    videoTitle.style.textAlign = 'center';
+
+                    // Adiciona evento de duplo clique para colocar o vídeo em tela cheia
+                    video.addEventListener('dblclick', () => {
+                        if (video.requestFullscreen) {
+                            video.requestFullscreen();
+                        } else if (video.mozRequestFullScreen) {
+                            video.mozRequestFullScreen();
+                        } else if (video.webkitRequestFullscreen) {
+                            video.webkitRequestFullscreen();
+                        } else if (video.msRequestFullscreen) {
+                            video.msRequestFullscreen();
+                        }
+                    });
+
+                    // Adiciona evento de clique simples para iniciar o vídeo
+                    video.addEventListener('click', () => {
+                        if (video.paused) {
+                            video.play();
+                        }
+                    });
+
+                    // Evento de duplo clique no título para edição
+                    videoTitle.addEventListener('dblclick', () => {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = videoTitle.textContent;
+                        input.style.textAlign = 'center';
+                        videoContainer.replaceChild(input, videoTitle);
+
+                        input.focus();
+
+                        input.addEventListener('blur', () => {
+                            const newTitle = input.value;
+                            window.electronAPI.changeNameVideo(download.title, newTitle);
+                            videoTitle.textContent = newTitle;
+                            videoContainer.replaceChild(videoTitle, input);
+                        });
+
+                        input.addEventListener('keydown', (event) => {
+                            if (event.key === 'Enter') {
+                                const newTitle = input.value;
+                                window.electronAPI.changeNameVideo(download.title, newTitle);
+                                videoTitle.textContent = newTitle;
+                                videoContainer.replaceChild(videoTitle, input);
+                            }
+                        });
+                    });
+
+                    // Adiciona o vídeo e o nome do vídeo na página
+                    videoContainer.appendChild(video);
+                    videoContainer.appendChild(videoTitle);
+                    list.appendChild(videoContainer);
+                });
+            }
+
+            // Atualiza a lista inicial sem filtro
+            updateList(downloads);
+
+            // Adiciona um ouvinte de evento para filtrar quando o valor mudar
+            filterInput.addEventListener('input', () => {
+                const filterText = filterInput.value;
+                const filteredDownloads = filterVideos(filterText, downloads);
+                updateList(filteredDownloads);
+            });
+        });
+    </script>
+</body>
+
+</html>
