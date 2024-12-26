@@ -46,6 +46,6 @@ Após iniciar o projeto, será aberto um vídeo do YouTube com três botões loc
 - Na aba aberta pelo segundo botão, você pode:
   - **Editar o nome do vídeo**: Clique duas vezes sobre o nome do vídeo para editá-lo.
   - **Iniciar o vídeo**: Clique para iniciar a reprodução do vídeo offline.
-  <img src="https://github.com/LucasAdriSilva/Karaoke/blob/master/videos/filter.gif" width="400" height="300">
+  <img src="https://github.com/LucasAdriSilva/Karaoke/blob/master/videos/filter.gif" width="400" height="200">
   
 - Também há um **filtro de busca** por nome do vídeo disponível na parte superior da página.
